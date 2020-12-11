@@ -5,41 +5,45 @@
 
 #include <iostream>
 #include <fstream>
-#include <cstring>
-#include <iostream>
-#include <graphics.h>
+#include <string>
+#include <utility>
 
-class treeNodes{
+//Underlying node class similar to that of a BST
+class BTNode{
 
     private:
-        std::sting data;
-        treeNodes* left;
-        treeNodes* right;
-        int repeats;
+        int m; //Order of the B-Tree
+        std::pair<std::string,int>* keys; //Key array. Each key is a word/counter pair
+        int numKeys; //Number of keys a node has
+        BTNode** children; //Pointer for the child node of a key
+        bool leaf; //Flag for whether this node is a leaf
 
     public:
-        treeNodes();
-        treeNodes(std::string data);
-        ~treeNodes();
+        BTNode(int order, bool leaf); //Constructor
+        ~BTNode();
+
+        void insertRec(std::string word); //recursive insert for non-full nodes
+        void split(int i, BTNode* child); //helper function to split a full node
 
     friend class BTree;
 
-}
+};
 
 class BTree{
 
     private:
-        treeNodes* root;
-        treeNodes* insert(std::string word);
-        treeNodes* leftRotate(treeNodes);
-        treeNodes* rightRotate(treeNodes);
-        void destroyTree(treeNodes* root);
-        bool checkPosition(std::string word, std::string currWord);
+        BTNode* root; //Root pointer
+        int m; //Order of the B-Tree
+
+       void insert(std::string word, BTNode* root); //Inserts a word
+       bool search(std::string word, BTNode* root); //Searches for a word
 
     public:
-        BTree();
-        ~BTree();
+        BTree(int order); //Constructor
+        ~BTree(); //Destructor
 
-}
+        bool search(std::string word); //Wrapper function for search
+        void insert(std::string k); //Inserts a word into the tree
+};
 
 #endif
